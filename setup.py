@@ -13,7 +13,7 @@ setup(
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Science/Research',
-        'Operating System :: UNIX :: Linux',
+        'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.10',
     ],
 )
