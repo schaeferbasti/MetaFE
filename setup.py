@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='MetaFE',
     version='0.1.0',
-    description='The best automated feature engineereing method',
+    description='The best automated feature engineering method',
     url='https://github.com/schaeferbasti/MetaFE',
     author='Bastian Schäfer',
     author_email='schaefer.bastian@mail.de',
