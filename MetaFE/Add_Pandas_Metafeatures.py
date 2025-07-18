@@ -3,11 +3,11 @@ import time
 
 import pandas as pd
 
-from src.utils.create_feature_and_featurename import create_feature
-from src.utils.get_data import get_openml_dataset_split_and_metadata
-from src.utils.get_matrix import get_additional_pandas_columns
-from src.utils.get_metafeatures import get_pandas_metafeatures
-from src.utils.get_operators import get_operators
+from MetaFE.utils.create_feature_and_featurename import create_feature
+from MetaFE.utils.get_data import get_openml_dataset_split_and_metadata
+from MetaFE.utils.get_matrix import get_additional_pandas_columns
+from MetaFE.utils.get_metafeatures import get_pandas_metafeatures
+from MetaFE.utils.get_operators import get_operators
 
 
 def get_operator_count(featurename, operators):
@@ -156,7 +156,7 @@ def add_pandas_metadata_columns(dataset_metadata, X_train, result_matrix):
 
 
 def main():
-    result_matrix = pd.read_parquet("src/Metadata/core/Core_Matrix_Complete.parquet")
+    result_matrix = pd.read_parquet("MetaFE/Metadata/core/Core_Matrix_Complete.parquet")
     columns = get_additional_pandas_columns()
     result_matrix_columns = result_matrix.columns.values.tolist()
     columns = columns + result_matrix_columns
@@ -167,7 +167,7 @@ def main():
     for dataset in datasets:
         print("Dataset: " + str(dataset))
         try:
-            pd.read_parquet("src/Metadata/pandas/Pandas_Matrix_Complete" + str(dataset) + ".parquet")
+            pd.read_parquet("MetaFE/Metadata/pandas/Pandas_Matrix_Complete" + str(dataset) + ".parquet")
         except FileNotFoundError:
             try:
                 counter += 1
@@ -177,14 +177,14 @@ def main():
                 result_matrix_dataset = add_pandas_metadata_columns(dataset_metadata, X_train, result_matrix_dataset)
                 result_matrix_pandas.columns = result_matrix_dataset.columns
                 result_matrix_pandas = pd.concat([result_matrix_pandas, result_matrix_dataset], axis=0)
-                result_matrix_pandas.to_parquet("src/Metadata/pandas/Pandas_Matrix_Complete" + str(dataset) + ".parquet")
+                result_matrix_pandas.to_parquet("MetaFE/Metadata/pandas/Pandas_Matrix_Complete" + str(dataset) + ".parquet")
                 end_dataset = time.time()
                 print("Time for Pandas on Dataset " + str(dataset) + ": " + str(end_dataset - start_dataset))
             except TypeError:
                 continue
             except KeyError:
                 continue
-    result_matrix_pandas.to_parquet("src/Metadata/pandas/Pandas_Matrix_Complete.parquet")
+    result_matrix_pandas.to_parquet("MetaFE/Metadata/pandas/Pandas_Matrix_Complete.parquet")
     end = time.time()
     print("Time for complete Pandas MF: " + str(end - start) + " on " + str(counter) + " datasets.")
 

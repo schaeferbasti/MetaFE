@@ -1,5 +1,5 @@
 # import argparse
-from src.Surrogate_Model import main
+from MetaFE.Surrogate_Model import main
 
 
 def run_metafe():

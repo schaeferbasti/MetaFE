@@ -8,12 +8,12 @@ import numpy as np
 import pandas as pd
 import psutil
 
-from src.Add_Pandas_Metafeatures import add_pandas_metadata_columns
+from MetaFE.Add_Pandas_Metafeatures import add_pandas_metadata_columns
 from autogluon.tabular.models import CatBoostModel
 
-from src.utils.create_feature_and_featurename import create_featurenames, extract_operation_and_original_features, create_feature_and_featurename
-from src.utils.get_data import get_openml_dataset_split_and_metadata, concat_data
-from src.utils.get_matrix import get_matrix_core_columns
+from MetaFE.utils.create_feature_and_featurename import create_featurenames, extract_operation_and_original_features, create_feature_and_featurename
+from MetaFE.utils.get_data import get_openml_dataset_split_and_metadata, concat_data
+from MetaFE.utils.get_matrix import get_matrix_core_columns
 from multiprocessing import Value
 import ctypes
 

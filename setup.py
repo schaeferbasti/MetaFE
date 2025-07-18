@@ -8,7 +8,7 @@ setup(
     author='Bastian Schäfer',
     author_email='schaefer.bastian@mail.de',
     license='',
-    packages=['src'],
+    packages=['MetaFE'],
     install_requires=['pandas','numpy','autogluon',],
     classifiers=[
         'Development Status :: 1 - Planning',

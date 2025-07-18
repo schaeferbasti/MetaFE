@@ -8,8 +8,8 @@ from sklearn.metrics import log_loss
 from autogluon.tabular import TabularPredictor
 import lightgbm as lgb
 
-from src.utils.Autogluon_MultilabelPredictor import MultilabelPredictor
-from src.utils.tabrepo_2024_custom import zeroshot2024
+from MetaFE.utils.Autogluon_MultilabelPredictor import MultilabelPredictor
+from MetaFE.utils.tabrepo_2024_custom import zeroshot2024
 
 
 def run_default_lgbm(X_train, y_train, X_test, y_test):

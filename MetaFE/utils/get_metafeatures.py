@@ -8,7 +8,7 @@ import numpy as np
 import tensorflow as tf
 from tabpfn import TabPFNClassifier
 
-from src.utils.get_data import get_name_and_split_and_save_dataset
+from MetaFE.utils.get_data import get_name_and_split_and_save_dataset
 
 
 def get_pymfe_metafeatures(feature):
@@ -150,7 +150,7 @@ def get_d2v_metafeatures(dataset_id):
         return dataset2vec
 
     # rootdir = os.path.dirname(os.path.realpath(__file__)) + "/dataset2vec"
-    rootdir = "src/Metadata/d2v/dataset2vec"
+    rootdir = "MetaFE/Metadata/d2v/dataset2vec"
     log_dir = os.path.join(rootdir, "checkpoints", f"searchspace-a/split-0/dataset2vec/vanilla/configuration-0/2025-06-05-18-47-03-578668")
     save_dir = os.path.join(rootdir, "extracted")
     configuration = json.load(open(os.path.join(log_dir, "configuration.txt"), "r"))
