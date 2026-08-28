@@ -90,7 +90,7 @@ def create_empty_core_matrix_for_dataset(X_train, model, dataset_id) -> pd.DataF
 
 
 def recursive_feature_addition(X, y, X_test, y_test, model, dataset_metadata, category_to_drop, wanted_min_relative_improvement, dataset_id):
-    result_matrix = pd.read_parquet("Pandas_Matrix_Complete.parquet")
+    result_matrix = pd.read_parquet("knowledge_base/Pandas_Matrix_Complete.parquet")
     datasets = pd.unique(result_matrix["dataset - id"]).tolist()
 
     if dataset_id in datasets:
@@ -108,7 +108,7 @@ def recursive_feature_addition(X, y, X_test, y_test, model, dataset_metadata, ca
         except KeyError:
             print("")
         data = concat_data(X, y, X_test, y_test, "target")
-        data.to_parquet("MetaFE_" + str(dataset_id) + ".parquet")
+        data.to_parquet("results/MetaFE_" + str(dataset_id) + ".parquet")
         return X, y
     else:
         try:
@@ -118,7 +118,7 @@ def recursive_feature_addition(X, y, X_test, y_test, model, dataset_metadata, ca
         except KeyError:
             print("")
         data = concat_data(X_new, y_new, X_test, y_test, "target")
-        data.to_parquet("MetaFE_" + str(dataset_id) + ".parquet")
+        data.to_parquet("results/MetaFE_" + str(dataset_id) + ".parquet")
         return recursive_feature_addition(X_new, y_new, X_test, y_test, model, dataset_metadata, category_to_drop, wanted_min_relative_improvement, dataset_id)
 
 
@@ -151,10 +151,10 @@ def process_method(dataset_id, model, wanted_min_relative_improvement):
     X_train = X_train.rename(columns=sanitize_column_name)
     X_test = X_test.rename(columns=sanitize_column_name)
     data = concat_data(X_train, y_train, X_test, y_test, "target")
-    data.to_parquet("MetaFE_" + str(dataset_id) + ".parquet")
+    data.to_parquet("results/MetaFE_" + str(dataset_id) + ".parquet")
     X_train, y_train = recursive_feature_addition(X_train, y_train, X_test, y_test, model, dataset_metadata, None, wanted_min_relative_improvement, dataset_id)
     data = concat_data(X_train, y_train, X_test, y_test, "target")
-    data.to_parquet("MetaFE_" + str(dataset_id) + ".parquet")
+    data.to_parquet("results/MetaFE_" + str(dataset_id) + ".parquet")
 
 
 def run_process_method(dataset_id, model, improvement):
@@ -162,7 +162,7 @@ def run_process_method(dataset_id, model, improvement):
 
 
 def main(dataset_id, wanted_min_relative_improvement, memory_limit_mb, time_limit_seconds):
-    print("MFE - Method: Pandas, Dataset: " + str(dataset_id) + ", Model: Recursive Surrogate Model using CatBoost using Pandas")
+    print("MFE - Method: Pandas, Dataset: " + str(dataset_id) + ", Model: Recursive MetaFE Model (CatBoost) using Pandas")
     model = "LightGBM_BAG_L1"
     process_func = partial(run_process_method, dataset_id, model, wanted_min_relative_improvement)
     exit_code = run_with_resource_limits(process_func, mem_limit_mb=memory_limit_mb, time_limit_sec=time_limit_seconds)

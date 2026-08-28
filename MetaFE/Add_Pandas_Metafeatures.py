@@ -113,7 +113,6 @@ def add_pandas_metadata_columns(dataset_metadata, X_train, result_matrix):
             feature_metadata = get_pandas_metafeatures(feature, featurename)
             new_row = pd.DataFrame(columns=columns)
             new_row.loc[len(result_matrix)] = [
-                # dataset_metadata["task_type"],
                 feature_metadata["feature - count"],
                 feature_metadata["feature - unique"],
                 feature_metadata["feature - top"],
@@ -121,22 +120,19 @@ def add_pandas_metadata_columns(dataset_metadata, X_train, result_matrix):
                 feature_metadata["feature - mean"],
                 feature_metadata["feature - std"],
                 feature_metadata["feature - min"],
-                feature_metadata["feature - 25"],
-                feature_metadata["feature - 50"],
-                feature_metadata["feature - 75"],
+                feature_metadata["feature - 25%"],
+                feature_metadata["feature - 50%"],
+                feature_metadata["feature - 75%"],
                 feature_metadata["feature - max"],
             ]
             matching_indices = result_matrix[result_matrix["feature - name"] == str(featurename)].index
             for idx in matching_indices:
                 new_columns.loc[idx] = new_row.iloc[0]
         except KeyError:
-            print(f"[DEBUG] KeyError for featurename={featurename!r}, "
-                  f"falling back to stale feature_to_delete={feature_to_delete!r}")
             feature = pd.DataFrame(X_train[feature_to_delete])
             feature_metadata = get_pandas_metafeatures(feature, feature_to_delete)
             new_row = pd.DataFrame(columns=columns)
             new_row.loc[len(result_matrix)] = [
-                # dataset_metadata["task_type"],
                 feature_metadata["feature - count"],
                 feature_metadata["feature - unique"],
                 feature_metadata["feature - top"],
@@ -144,9 +140,9 @@ def add_pandas_metadata_columns(dataset_metadata, X_train, result_matrix):
                 feature_metadata["feature - mean"],
                 feature_metadata["feature - std"],
                 feature_metadata["feature - min"],
-                feature_metadata["feature - 25"],
-                feature_metadata["feature - 50"],
-                feature_metadata["feature - 75"],
+                feature_metadata["feature - 25%"],
+                feature_metadata["feature - 50%"],
+                feature_metadata["feature - 75%"],
                 feature_metadata["feature - max"],
             ]
             matching_indices = result_matrix[result_matrix["feature - name"] == str(featurename)].index
@@ -158,7 +154,7 @@ def add_pandas_metadata_columns(dataset_metadata, X_train, result_matrix):
 
 
 def main():
-    result_matrix = pd.read_parquet("src/Metadata/core/Core_Matrix_Complete.parquet")
+    result_matrix = pd.read_parquet("knowledge_base/Core_Matrix_Complete.parquet")
     columns = get_additional_pandas_columns()
     result_matrix_columns = result_matrix.columns.values.tolist()
     columns = columns + result_matrix_columns
@@ -169,7 +165,7 @@ def main():
     for dataset in datasets:
         print("Dataset: " + str(dataset))
         try:
-            pd.read_parquet("src/Metadata/pandas/Pandas_Matrix_Complete" + str(dataset) + ".parquet")
+            pd.read_parquet("knowledge_base/Pandas_Matrix_Complete" + str(dataset) + ".parquet")
         except FileNotFoundError:
             try:
                 counter += 1
