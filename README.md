@@ -15,8 +15,8 @@ automated feature engineering method, on 44 datasets sourced from [OpenML](https
 ```
 MetaFE/
 ├── knowledge_base/
-│   ├── Core_Matrix_Complete.parquet/         # Recursive feature addition and surrogate model logic
-│   ├── Pandas_Matrix_Complete/               # Recursive feature addition and surrogate model logic
+│   ├── Core_Matrix_Complete.parquet/         # Model- and Improvement-only Knowledge Base
+│   ├── Pandas_Matrix_Complete/               # Complete Knowledge Base (Core_Matrix_Complete.parquet with meta-features)
 ├── results/
 │   ├── MetaFE_146818.parquet                 # Exemplary result of MetaFE
 ├── utils/
