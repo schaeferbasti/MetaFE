@@ -3,11 +3,11 @@ import time
 
 import pandas as pd
 
-from MetaFE.utils.create_feature_and_featurename import create_feature
-from MetaFE.utils.get_data import get_openml_dataset_split_and_metadata
-from MetaFE.utils.get_matrix import get_additional_pandas_columns
-from MetaFE.utils.get_metafeatures import get_pandas_metafeatures
-from MetaFE.utils.get_operators import get_operators
+from utils.create_feature_and_featurename import create_feature
+from utils.get_data import get_openml_dataset_split_and_metadata
+from utils.get_matrix import get_additional_pandas_columns
+from utils.get_metafeatures import get_pandas_metafeatures
+from utils.get_operators import get_operators
 
 
 def get_operator_count(featurename, operators):
@@ -130,6 +130,8 @@ def add_pandas_metadata_columns(dataset_metadata, X_train, result_matrix):
             for idx in matching_indices:
                 new_columns.loc[idx] = new_row.iloc[0]
         except KeyError:
+            print(f"[DEBUG] KeyError for featurename={featurename!r}, "
+                  f"falling back to stale feature_to_delete={feature_to_delete!r}")
             feature = pd.DataFrame(X_train[feature_to_delete])
             feature_metadata = get_pandas_metafeatures(feature, feature_to_delete)
             new_row = pd.DataFrame(columns=columns)

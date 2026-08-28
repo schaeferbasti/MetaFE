@@ -8,7 +8,7 @@ import numpy as np
 import tensorflow as tf
 from tabpfn import TabPFNClassifier
 
-from MetaFE.utils.get_data import get_name_and_split_and_save_dataset
+from utils.get_data import get_name_and_split_and_save_dataset
 
 
 def get_pymfe_metafeatures(feature):

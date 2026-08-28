@@ -1,20 +1,18 @@
 from __future__ import annotations
 
-import argparse
 import multiprocessing
 import time
 from functools import partial
 
-import numpy as np
 import pandas as pd
 import psutil
 
-from MetaFE.Add_Pandas_Metafeatures import add_pandas_metadata_columns
+from Add_Pandas_Metafeatures import add_pandas_metadata_columns
 from autogluon.tabular.models import CatBoostModel
 
-from MetaFE.utils.create_feature_and_featurename import create_featurenames, extract_operation_and_original_features, create_feature_and_featurename
-from MetaFE.utils.get_data import get_openml_dataset_split_and_metadata, concat_data
-from MetaFE.utils.get_matrix import get_matrix_core_columns
+from utils.create_feature_and_featurename import create_featurenames, extract_operation_and_original_features, create_feature_and_featurename
+from utils.get_data import get_openml_dataset_split_and_metadata, concat_data
+from utils.get_matrix import get_matrix_core_columns
 from multiprocessing import Value
 import ctypes
 
@@ -102,7 +100,7 @@ def recursive_feature_addition(X, y, X_test, y_test, model, dataset_metadata, ca
     comparison_result_matrix = add_pandas_metadata_columns(dataset_metadata, X, comparison_result_matrix)
     # Predict and split again
     X_new, y_new = predict_improvement(result_matrix, comparison_result_matrix, X, y, wanted_min_relative_improvement)
-    if X_new.equals(X):  # if X_new.shape == X.shape
+    if X_new.equals(X):
         try:
             y_list = y['target'].tolist()
             y_series = pd.Series(y_list)
@@ -128,8 +126,6 @@ def predict_improvement(result_matrix, comparison_result_matrix, X_train, y_trai
     y_result = result_matrix["improvement"]
     result_matrix = result_matrix.drop("improvement", axis=1)
     comparison_result_matrix = comparison_result_matrix.drop("improvement", axis=1)
-    # clf = RealMLPModel()
-    # clf = TabDPTModel()
     clf = CatBoostModel()
     clf.fit(X=result_matrix, y=y_result)
 
@@ -168,8 +164,6 @@ def run_process_method(dataset_id, model, improvement):
 def main(dataset_id, wanted_min_relative_improvement, memory_limit_mb, time_limit_seconds):
     print("MFE - Method: Pandas, Dataset: " + str(dataset_id) + ", Model: Recursive Surrogate Model using CatBoost using Pandas")
     model = "LightGBM_BAG_L1"
-    # process_func = lambda: process_method(dataset_id, model, wanted_min_relative_improvement)
-    # exit_code = run_with_resource_limits(process_func, mem_limit_mb=memory_limit_mb, time_limit_sec=time_limit_seconds)
     process_func = partial(run_process_method, dataset_id, model, wanted_min_relative_improvement)
     exit_code = run_with_resource_limits(process_func, mem_limit_mb=memory_limit_mb, time_limit_sec=time_limit_seconds)
     if exit_code != 0:

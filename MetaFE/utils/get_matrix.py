@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from pymfe.mfe import MFE
 
-from MetaFE.utils.create_feature_and_featurename import create_featurenames
+from utils.create_feature_and_featurename import create_featurenames
 
 
 def get_matrix_columns():
