@@ -1,9 +1,8 @@
 from __future__ import annotations
 
+import argparse
 import multiprocessing
 import time
-from functools import partial
-
 import numpy as np
 import pandas as pd
 import psutil
@@ -27,6 +26,10 @@ merge_keys = ["dataset - id", "feature - name", "operator", "model", "improvemen
 def safe_merge(left, right):
     return pd.merge(left, right, on=merge_keys, how="inner")
 
+def sanitize_column_name(name):
+    name = str(name).strip()
+    name = name.replace(',', '_').replace('(', '_').replace(')', '_')
+    return name
 
 def get_additional_features(X, y, prediction_result):
     additional_feature_list = prediction_result['feature - name']
@@ -157,7 +160,8 @@ def predict_improvement(result_matrix, comparison_result_matrix, X_train, y_trai
     clf.fit(X=result_matrix, y=y_result)
 
     # Predict and score
-    comparison_result_matrix = comparison_result_matrix[result_matrix.columns]
+    comparison_result_matrix.columns = comparison_result_matrix.columns.astype(str)
+    comparison_result_matrix = comparison_result_matrix.reindex(columns=result_matrix.columns)
     prediction = clf.predict(X=comparison_result_matrix)
     prediction_df = pd.DataFrame(prediction, columns=["predicted_improvement"])
     prediction_concat_df = pd.concat([comparison_result_matrix[["dataset - id", "feature - name", "model"]], prediction_df], axis=1)
@@ -174,6 +178,10 @@ def predict_improvement(result_matrix, comparison_result_matrix, X_train, y_trai
 def process_method(dataset_id, model, wanted_min_relative_improvement):
     last_reset_time.value = time.time()
     X_train, y_train, X_test, y_test, dataset_metadata = get_openml_dataset_split_and_metadata(dataset_id)
+    X_train = X_train.rename(columns=sanitize_column_name)
+    X_test = X_test.rename(columns=sanitize_column_name)
+    data = concat_data(X_train, y_train, X_test, y_test, "target")
+    data.to_parquet("7200_FE_" + str(dataset_id) + "_" + str(method) + "_CatBoost_recursion.parquet")
     start = time.time()
     X_train, y_train = recursive_feature_addition(X_train, y_train, X_test, y_test, model, dataset_metadata, None, wanted_min_relative_improvement, dataset_id)
     end = time.time()
@@ -226,8 +234,8 @@ def run_with_resource_limits(target_func, mem_limit_mb, time_limit_sec, check_in
 def main_wrapper():
     dataset = 2073
     wanted_min_relative_improvement = 0.1
-    memory_limit_mb = 64000
-    time_limit_seconds = 7200
+    memory_limit_mb = 32000
+    time_limit_seconds = 1000
     main(int(dataset), wanted_min_relative_improvement, memory_limit_mb, time_limit_seconds)
 
 
