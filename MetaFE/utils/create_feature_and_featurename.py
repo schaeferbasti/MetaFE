@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import re
-from src.utils.get_operators import get_operators
+from MetaFE.utils.get_operators import get_operators
 
 
 def create_feature_and_featurename(feature1, feature2, operator):

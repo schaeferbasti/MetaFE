@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import multiprocessing
 import time
+from functools import partial
+
 import numpy as np
 import pandas as pd
 import psutil
@@ -89,34 +91,6 @@ def create_empty_core_matrix_for_dataset(X_train, model, dataset_id) -> pd.DataF
     return comparison_result_matrix
 
 
-def get_mfe_categories():
-    X_dummy = np.array([[0, 1], [1, 0]])
-    y_dummy = np.array([0, 1])
-
-    # Initialize result dictionary
-    groups = [
-        "general",
-        "statistical",
-        "info-theory",
-        "landmarking",
-        "complexity",
-        "clustering",
-        "concept",
-        "itemset"
-    ]
-
-    # This will hold your result like:
-    # [dataset_metadata_general_names, dataset_metadata_statistical_names, ...]
-    group_feature_lists = []
-
-    for group in groups:
-        mfe = MFE(groups=[group])
-        mfe.fit(X_dummy, y_dummy)
-        feature_names, _ = mfe.extract()
-        group_feature_lists.append(feature_names)
-    return group_feature_lists
-
-
 def recursive_feature_addition(X, y, X_test, y_test, model, dataset_metadata, category_to_drop, wanted_min_relative_improvement, dataset_id):
     result_matrix = pd.read_parquet("Pandas_Matrix_Complete.parquet")
     datasets = pd.unique(result_matrix["dataset - id"]).tolist()
@@ -181,10 +155,8 @@ def process_method(dataset_id, model, wanted_min_relative_improvement):
     X_train = X_train.rename(columns=sanitize_column_name)
     X_test = X_test.rename(columns=sanitize_column_name)
     data = concat_data(X_train, y_train, X_test, y_test, "target")
-    data.to_parquet("7200_FE_" + str(dataset_id) + "_" + str(method) + "_CatBoost_recursion.parquet")
-    start = time.time()
+    data.to_parquet("MetaFE_" + str(dataset_id) + ".parquet")
     X_train, y_train = recursive_feature_addition(X_train, y_train, X_test, y_test, model, dataset_metadata, None, wanted_min_relative_improvement, dataset_id)
-    end = time.time()
     data = concat_data(X_train, y_train, X_test, y_test, "target")
     data.to_parquet("MetaFE_" + str(dataset_id) + ".parquet")
 

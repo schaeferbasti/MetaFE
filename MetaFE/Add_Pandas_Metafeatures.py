@@ -3,11 +3,11 @@ import time
 
 import pandas as pd
 
-from src.utils.create_feature_and_featurename import create_feature
-from src.utils.get_data import get_openml_dataset_split_and_metadata
-from src.utils.get_matrix import get_additional_pandas_columns
-from src.utils.get_metafeatures import get_pandas_metafeatures
-from src.utils.get_operators import get_operators
+from MetaFE.utils.create_feature_and_featurename import create_feature
+from MetaFE.utils.get_data import get_openml_dataset_split_and_metadata
+from MetaFE.utils.get_matrix import get_additional_pandas_columns
+from MetaFE.utils.get_metafeatures import get_pandas_metafeatures
+from MetaFE.utils.get_operators import get_operators
 
 
 def get_operator_count(featurename, operators):
